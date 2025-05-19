@@ -26,4 +26,12 @@ class FirebaseService {
   Future<void> updateTodoStatus(String id, bool isDone) {
     return todosCollection.doc(id).update({'isDone': isDone});
   }
+
+  Future<void> updateTodoTitle(String id, String newTitle) {
+    return todosCollection.doc(id).update({'title': newTitle});
+  }
+
+  Future<void> deleteTodo(String id) {
+    return todosCollection.doc(id).delete();
+  }
 }

@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController _todoController = TextEditingController();
-  final DateFormat formatter = DateFormat("dd MMM yyyy, HH:mm");
+  final DateFormat formatter = DateFormat('dd MMM yyyy, HH:mm');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
-                if (snapshot.hasData || snapshot.data!.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('Tidak ada tugas (No Assignment)'));
                 }
                 return ListView.builder(
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: ListTile(
                         title: Text(
-                          'todo.title',
+                          todo.title,
                           style: TextStyle(
                             decoration:
                                 todo.isDone ? TextDecoration.lineThrough : null,
@@ -80,20 +80,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               value ?? false,
                             );
                           },
-                          trailing: Row(
-                            mainAxisAlignment: MainAxisAlignment.min,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  _showEditDialog(context, todo);
-                                },
-                                icon: Icon(Icons.edit),
-                              ),
-                              IconButton(onPressed: () {
-                                _firebaseService.deleteTodo(todo.id)
-                              }, icon: Icon(Icons.delete))
-                            ],
-                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _showEditDialog(context, todo);
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _firebaseService.deleteTodo(todo.id);
+                              },
+                              icon: Icon(Icons.delete),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -106,14 +109,47 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   void _showEditDialog(BuildContext context, Todo todo) {
-    TextEditingController editController = TextEditingController(text: todo.title);
-    showDialog(context: context, builder: (context) => AlertDialog(
-      title: Text('Edit Tugas (Task Edit)'),
-      content: TextField(
-        controller: editController,
-        decoration: InputDecoration(hintText: 'Masukkan nama tugas baru (Enter new task name)'),
-      ),
-    ));
+    TextEditingController editController = TextEditingController(
+      text: todo.title,
+    );
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Edit Tugas (Task Edit)'),
+            content: TextField(
+              controller: editController,
+              decoration: InputDecoration(
+                hintText: 'Masukkan nama tugas baru (Enter new task name)',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Batal (Cancel)'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (editController.text.isNotEmpty) {
+                    _firebaseService.updateTodoTitle(
+                      todo.id,
+                      editController.text,
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text('Simpan (Save)'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _todoController.dispose();
+    super.dispose();
   }
 }
