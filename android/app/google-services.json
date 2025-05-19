@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "759311910524",
+    "project_id": "aibeecara-todo",
+    "storage_bucket": "aibeecara-todo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759311910524:android:13dfd6dc5602d905a1abf9",
+        "android_client_info": {
+          "package_name": "com.example.todo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbFbBBjVAXIF8Wlov0AqsufbYC7EZlp0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
